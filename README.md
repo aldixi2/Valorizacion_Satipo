@@ -45,7 +45,40 @@ salud está en 0% porque el único RAtenDet que me pasaste es de agosto
 la pestaña "Por profesional" se llena. Mientras tanto, "Resumen" y
 "Per cápita" ya funcionan al 100% porque no necesitan ese cruce.
 
-## 2. Diagnósticos con cobertura per cápita (Anexo 19)
+## 2. Por qué el total "se ve poco" en algunas vistas
+
+Dos cosas distintas que se pueden confundir:
+
+- **"Resumen" y los KPI de arriba siempre muestran el 100%** de la
+  valorización del Excel, tenga o no cruce con el profesional. Si ahí
+  ves S/ 923,931 en total (ene-may 2026), ese es el número real.
+- **"Por profesional", "Matriz" y "Ranking" solo muestran lo que tiene
+  cruce encontrado.** Hoy eso está en 0% (ver sección 1) porque aún no
+  corriste el script con tus RAtenDet de esos meses — por diseño, no le
+  puedo poner nombre a una atención que no crucé. En cuanto corras el
+  script con los RAtenDet correctos, esas 3 pestañas se llenan.
+
+Aparte de eso, hay un hallazgo real en tus datos (no es un error del
+dashboard): de las 23,682 atenciones de enero-mayo, **solo 18.1% tienen
+Valor Bruto SIS mayor a cero** (S/ 923,931 en total). El resto:
+
+- **63.6%** tiene diagnóstico del Anexo 19 → per cápita, esperado en 0.
+- **18.3% (4,330 atenciones) no tiene diagnóstico del Anexo y aun así
+  está en cero** — esto es lo que revisar. La pestaña **"No
+  valorizadas"** te desglosa esto por profesión, servicio y
+  diagnóstico, y trae una tabla descargable en CSV con el detalle
+  (FUA, fecha, servicio, profesión, diagnóstico) para que hagas
+  seguimiento.
+
+Un caso puntual que puede sorprender: **atención de parto por
+obstetriz** — revisé y el diagnóstico O800/O809 (parto único
+espontáneo) SÍ está en el Anexo 19, así que su Valor Bruto SIS en cero
+es "correcto" según la regla de la 22.4 (cae en per cápita). Si te
+parece que el parto no debería estar tratado igual que una consulta
+simple, eso ya es una discusión de política de pago con SIS/DIRESA, no
+algo que el dashboard pueda corregir por su cuenta.
+
+## 3. Diagnósticos con cobertura per cápita (Anexo 19)
 
 El script trae embebidos los 354 códigos CIE10 del Anexo que compartiste
 (`DIAGNOSTICOS_PERCAPITA` en `consolidar_valorizacion.py`). Cada atención
@@ -73,7 +106,7 @@ al revés según la 22.4). Puede ser normal — quizás hay más motivos para
 lo revises con lo que ya conoces del proceso, antes de tomar el % de
 "Per cápita" del dashboard como cifra oficial de conciliación de pago.
 
-## 3. Abrir el dashboard
+## 4. Abrir el dashboard
 
 **En GitHub Pages (o cualquier hosting estático):** solo sube la
 carpeta tal cual. `index.html` funciona directo, sin configurar nada
@@ -87,7 +120,7 @@ python -m http.server 8765
 ```
 y abre `http://localhost:8765/index.html`.
 
-## 4. Qué trae cada pestaña
+## 5. Qué trae cada pestaña
 
 - **Resumen**: servicios con mayor valorización, valor por componente
   (servicio/medicamento/insumo/apoyo al diagnóstico), diagnósticos más
@@ -99,10 +132,11 @@ y abre `http://localhost:8765/index.html`.
 - **Ranking**: ordenable por total, promedio o N° de atenciones — nota
   aclaratoria de que es para evaluación estadística, no mide calidad
   clínica ni carga real de trabajo.
-- **Per cápita**: cuántas atenciones y cuánto valor caen en el Anexo,
-  y qué diagnósticos/servicios concentran esa "pérdida".
+- **No valorizadas**: desglosa las atenciones en 3 grupos — sí valorizan,
+  van a per cápita (Anexo), y sin explicación (revisar). Trae tabla
+  descargable en CSV del tercer grupo para hacer seguimiento.
 
-## 5. Datos de pacientes
+## 6. Datos de pacientes
 
 Nombre, DNI y fecha de nacimiento del **paciente** nunca se guardan en
 los JSON. Sí se guarda el DNI y nombre del **profesional de salud**

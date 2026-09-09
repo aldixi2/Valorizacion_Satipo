@@ -217,9 +217,9 @@
     </div>
     <div class="kpi k2">
       <div class="kicon"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="2.5" width="13" height="13" rx="2"/><line x1="2.5" y1="7" x2="15.5" y2="7"/></svg></div>
-      <div class="klabel">Atenciones valorizadas</div>
+      <div class="klabel">Atenciones en el periodo</div>
       <div class="kval skeleton" id="kpiTotal">00</div>
-      <div class="ksub">N° de FUA en el periodo</div>
+      <div class="ksub">N° de FUA (valorizadas o no)</div>
     </div>
     <div class="kpi k4">
       <div class="kicon"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="6" r="3"/><path d="M3.5 15.5c0-3.3 2.5-5.3 5.5-5.3s5.5 2 5.5 5.3"/></svg></div>
@@ -248,9 +248,9 @@
     </div>
     <div class="kpi k6">
       <div class="kicon"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="6.5"/><path d="M9 6v3l2 1.5"/></svg></div>
-      <div class="klabel">Va a per cápita</div>
+      <div class="klabel">Atenciones que sí valorizan</div>
       <div class="kval skeleton" id="kpiPercapita">00</div>
-      <div class="ksub" id="kpiPercapitaSub">% de atenciones con diagnóstico del Anexo</div>
+      <div class="ksub" id="kpiPercapitaSub">Valor Bruto SIS &gt; 0 · el resto está en "No valorizadas"</div>
     </div>
     <div class="kpi k7">
       <div class="kicon"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,13 7,8 10,11 16,4"/><polyline points="11,4 16,4 16,9"/></svg></div>
@@ -295,7 +295,7 @@
       <div class="tab" id="tabProfesional"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="6" r="3"/><path d="M3.5 15.5c0-3.3 2.5-5.3 5.5-5.3s5.5 2 5.5 5.3"/></svg> Por profesional</div>
       <div class="tab" id="tabMatriz"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="2.5" width="13" height="13" rx="2"/><line x1="2.5" y1="7" x2="15.5" y2="7"/></svg> Matriz por día</div>
       <div class="tab" id="tabRanking"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="14" x2="4" y2="9"/><line x1="9" y1="14" x2="9" y2="4"/><line x1="14" y1="14" x2="14" y2="11"/></svg> Ranking</div>
-      <div class="tab" id="tabPercapita"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="6.5"/><path d="M9 6v3l2 1.5"/></svg> Per cápita</div>
+      <div class="tab" id="tabPercapita"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="6.5"/><path d="M9 6v3l2 1.5"/></svg> No valorizadas</div>
     </div>
   </div>
 
@@ -350,22 +350,48 @@
 
   <!-- PER CAPITA -->
   <div class="card" id="cardPercapita" style="display:none">
-    <div class="card-titulo"><div class="icono"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="6.5"/><path d="M9 6v3l2 1.5"/></svg></div> Impacto del pago per cápita</div>
+    <div class="card-titulo"><div class="icono"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="6.5"/><path d="M9 6v3l2 1.5"/></svg></div> Atenciones no valorizadas</div>
     <div class="filtros-nota">
-      Según el Anexo de diagnósticos con cobertura por mecanismo de pago per cápita: si el diagnóstico de la atención está
-      en esa lista, la atención queda cubierta por la cápita y no genera valorización adicional por fuera de ella
-      ("se pierde la atención" para efectos de pago por servicio).
+      De todas las atenciones del periodo, una parte SÍ genera Valor Bruto SIS, otra parte no genera nada porque su
+      diagnóstico está en el Anexo de per cápita (correcto, cubierto por la cápita), y una tercera parte no genera
+      nada <b>sin que el diagnóstico esté en el Anexo</b> — esta última es la que conviene revisar: podría ser una
+      atención que sí debería haberse valorizado.
     </div>
     <div class="percap-hero">
-      <div class="percap-card"><b id="pcAtenciones">0</b><span>Atenciones con diagnóstico del Anexo</span></div>
-      <div class="percap-card"><b id="pcPctAtenciones">0%</b><span>% del total de atenciones</span></div>
-      <div class="percap-card"><b id="pcValor">S/ 0</b><span>Valor Bruto SIS de esas atenciones</span></div>
+      <div class="percap-card" style="background:#EAF7F1;border-color:#B9E4CE"><b id="pcValorizadas" style="color:#0B6B4C">0</b><span>Sí valorizan (Valor Bruto SIS &gt; 0)</span></div>
+      <div class="percap-card"><b id="pcPercapita">0</b><span>Cero, explicado por Anexo (per cápita)</span></div>
+      <div class="percap-card" style="background:#FDEDED;border-color:#F3C2C2"><b id="pcSinExplicacion" style="color:#9B1C1C">0</b><span>Cero, SIN explicación — revisar</span></div>
     </div>
-    <h3 style="font-size:12.5px;margin-bottom:10px;color:var(--navy)">Diagnósticos del Anexo más frecuentes en este periodo</h3>
-    <div class="bar-list" id="percapDiagnosticos"></div>
-    <h3 style="font-size:12.5px;margin:16px 0 6px;color:var(--navy)">Servicios más afectados</h3>
-    <div class="bar-list" id="percapServicios"></div>
+    <div class="split-bar" id="valorizacionBar" style="margin-bottom:6px"></div>
+    <div class="split-legend" style="margin-bottom:16px">
+      <span><i style="background:#0E9F6E"></i> Valorizadas</span>
+      <span><i style="background:#F0BE72"></i> Per cápita (Anexo)</span>
+      <span><i style="background:#DC2626"></i> Sin explicación</span>
+    </div>
+
+    <div class="resumen-grid">
+      <div>
+        <h3 style="font-size:12.5px;margin-bottom:10px;color:#9B1C1C">Sin explicación — por profesión</h3>
+        <div class="bar-list" id="sinexpProfesion"></div>
+        <h3 style="font-size:12.5px;margin:16px 0 6px;color:#9B1C1C">Sin explicación — por servicio</h3>
+        <div class="bar-list" id="sinexpServicios"></div>
+        <h3 style="font-size:12.5px;margin:16px 0 6px;color:#9B1C1C">Sin explicación — por diagnóstico</h3>
+        <div class="bar-list" id="sinexpDiagnosticos"></div>
+      </div>
+      <div>
+        <h3 style="font-size:12.5px;margin-bottom:10px;color:var(--navy)">Per cápita (Anexo) — diagnósticos más frecuentes</h3>
+        <div class="bar-list" id="percapDiagnosticos"></div>
+        <h3 style="font-size:12.5px;margin:16px 0 6px;color:var(--navy)">Per cápita (Anexo) — servicios más frecuentes</h3>
+        <div class="bar-list" id="percapServicios"></div>
+      </div>
+    </div>
+
+    <h3 style="font-size:12.5px;margin:18px 0 8px;color:#9B1C1C">Detalle de atenciones sin explicación (para seguimiento)</h3>
+    <div class="muted" style="margin-bottom:8px">Sin datos de paciente. Se muestran hasta 500 filas del periodo filtrado; descarga el CSV para ver todas.</div>
+    <button class="btn-cl no-print" id="btnDescargarSinExp" style="margin-bottom:10px">⬇️ Descargar CSV completo</button>
+    <div class="scroll"><table id="tablaSinExplicacion"></table></div>
   </div>
+
 
   <div class="card" id="printFooter"><div class="pf-inner">Dashboard generado con USPP Satipo &nbsp;|&nbsp; <span id="printFechaFooter"></span></div></div>
 
@@ -523,9 +549,9 @@ function actualizarKPIs(dTodos, dProf, totAnt){
   ring.style.strokeDasharray = c; ring.style.strokeDashoffset = c - (Math.min(cobertura,100)/100)*c;
   ring.style.stroke = cobertura>=70 ? "#0E9F6E" : (cobertura>=40 ? "#D97706" : "#DC2626");
 
-  const percapN = dTodos.filter(r=>r.diagnostico_percapita).length;
-  const percapPct = total ? Math.round(percapN/total*100) : 0;
-  $("kpiPercapita").textContent = percapPct+"%"; $("kpiPercapita").classList.remove("skeleton");
+  const conValor = dTodos.filter(r=>r.valor_bruto_sis>0).length;
+  const pctConValor = total ? Math.round(conValor/total*100) : 0;
+  $("kpiPercapita").textContent = pctConValor+"%"; $("kpiPercapita").classList.remove("skeleton");
 
   let tendTxt="—";
   if(totAnt>0){ const delta = Math.round(((valorTotal-totAnt)/totAnt)*100); tendTxt = (delta>=0?"▲ +":"▼ ")+Math.abs(delta)+"%"; }
@@ -538,7 +564,7 @@ function actualizarKPIs(dTodos, dProf, totAnt){
   const pctObs = conObs ? Math.round((siObs/conObs)*100) : 0;
   $("kpiObservado").textContent = pctObs+"%"; $("kpiObservado").classList.remove("skeleton");
 
-  return { valorTotal, total, siObs, conObs, percapN };
+  return { valorTotal, total, siObs, conObs };
 }
 
 /* ══════════════════════════════════════════ RESUMEN ══════════════════════════════════════════ */
@@ -647,21 +673,71 @@ document.querySelectorAll("#rkMetricsVal .rk-metric-btn").forEach(btn=>{
 });
 
 /* ══════════════════════════════════════════ PER CÁPITA ══════════════════════════════════════════ */
+function csvEscape(v){
+  const s = String(v==null?"":v);
+  return /[",\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s;
+}
+function descargarCSV(filename, headers, rows){
+  const lineas = [headers.join(",")].concat(rows.map(r=>r.map(csvEscape).join(",")));
+  const blob = new Blob(["\uFEFF"+lineas.join("\r\n")], {type:"text/csv;charset=utf-8;"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+}
+let SIN_EXPLICACION_ACTUAL = [];
+
 function renderPercapita(dTodos){
-  const conPercap = dTodos.filter(r=>r.diagnostico_percapita);
-  const valor = conPercap.reduce((a,r)=>a+(r.valor_bruto_sis||0),0);
-  $("pcAtenciones").textContent = conPercap.length.toLocaleString("es-PE");
-  $("pcPctAtenciones").textContent = dTodos.length ? Math.round(conPercap.length/dTodos.length*100)+"%" : "0%";
-  $("pcValor").textContent = fmtSoles(valor);
+  const valorizadas = dTodos.filter(r=>r.valor_bruto_sis>0);
+  const percap = dTodos.filter(r=>r.valor_bruto_sis===0 && r.diagnostico_percapita);
+  const sinExp = dTodos.filter(r=>r.valor_bruto_sis===0 && !r.diagnostico_percapita);
+  SIN_EXPLICACION_ACTUAL = sinExp;
+  const n = dTodos.length || 1;
+
+  $("pcValorizadas").textContent = `${valorizadas.length.toLocaleString("es-PE")} (${Math.round(valorizadas.length/n*100)}%)`;
+  $("pcPercapita").textContent = `${percap.length.toLocaleString("es-PE")} (${Math.round(percap.length/n*100)}%)`;
+  $("pcSinExplicacion").textContent = `${sinExp.length.toLocaleString("es-PE")} (${Math.round(sinExp.length/n*100)}%)`;
+
+  $("valorizacionBar").innerHTML =
+    `<div style="width:${valorizadas.length/n*100}%;background:#0E9F6E"></div>`+
+    `<div style="width:${percap.length/n*100}%;background:#F0BE72"></div>`+
+    `<div style="width:${sinExp.length/n*100}%;background:#DC2626"></div>`;
 
   const porDiag = new Map();
-  for(const r of conPercap){ const k=r.diagnostico||"(sin diagnóstico)"; porDiag.set(k,(porDiag.get(k)||0)+1); }
-  renderBarList("percapDiagnosticos", [...porDiag.entries()].map(([label,valor])=>({label,valor})).sort((a,b)=>b.valor-a.valor).slice(0,10), v=>v.toLocaleString("es-PE"), true);
+  for(const r of percap){ const k=r.diagnostico||"(sin diagnóstico)"; porDiag.set(k,(porDiag.get(k)||0)+1); }
+  renderBarList("percapDiagnosticos", [...porDiag.entries()].map(([label,valor])=>({label,valor})).sort((a,b)=>b.valor-a.valor).slice(0,10), v=>v.toLocaleString("es-PE"));
 
   const porServ = new Map();
-  for(const r of conPercap){ const k=r.servicio||"(sin servicio)"; porServ.set(k,(porServ.get(k)||0)+1); }
-  renderBarList("percapServicios", [...porServ.entries()].map(([label,valor])=>({label,valor})).sort((a,b)=>b.valor-a.valor).slice(0,10), v=>v.toLocaleString("es-PE"), true);
+  for(const r of percap){ const k=r.servicio||"(sin servicio)"; porServ.set(k,(porServ.get(k)||0)+1); }
+  renderBarList("percapServicios", [...porServ.entries()].map(([label,valor])=>({label,valor})).sort((a,b)=>b.valor-a.valor).slice(0,10), v=>v.toLocaleString("es-PE"));
+
+  const porProf = new Map();
+  for(const r of sinExp){ const k=r.profesion||"(sin profesión)"; porProf.set(k,(porProf.get(k)||0)+1); }
+  renderBarList("sinexpProfesion", [...porProf.entries()].map(([label,valor])=>({label,valor})).sort((a,b)=>b.valor-a.valor).slice(0,10), v=>v.toLocaleString("es-PE"), true);
+
+  const porServSin = new Map();
+  for(const r of sinExp){ const k=r.servicio||"(sin servicio)"; porServSin.set(k,(porServSin.get(k)||0)+1); }
+  renderBarList("sinexpServicios", [...porServSin.entries()].map(([label,valor])=>({label,valor})).sort((a,b)=>b.valor-a.valor).slice(0,10), v=>v.toLocaleString("es-PE"), true);
+
+  const porDiagSin = new Map();
+  for(const r of sinExp){ const k=r.diagnostico||"(sin diagnóstico)"; porDiagSin.set(k,(porDiagSin.get(k)||0)+1); }
+  renderBarList("sinexpDiagnosticos", [...porDiagSin.entries()].map(([label,valor])=>({label,valor})).sort((a,b)=>b.valor-a.valor).slice(0,10), v=>v.toLocaleString("es-PE"), true);
+
+  let html = `<thead><tr><th>FUA</th><th>Fecha atención</th><th style="text-align:left">Servicio</th><th>Profesión</th><th>Diagnóstico</th><th>Categoría</th></tr></thead><tbody>`;
+  if(!sinExp.length){
+    html += `<tr><td colspan="6" style="padding:16px">Ninguna atención sin explicación con estos filtros — bien ahí.</td></tr>`;
+  } else {
+    for(const r of sinExp.slice(0,500)){
+      html += `<tr><td>${esc(r.fua)}</td><td>${esc(r.fecha_atencion)}</td><td style="text-align:left">${esc(r.servicio)}</td><td>${esc(r.profesion)}</td><td>${esc(r.diagnostico)}</td><td>${esc(r.categoria)}</td></tr>`;
+    }
+  }
+  html += "</tbody>";
+  $("tablaSinExplicacion").innerHTML = html;
 }
+$("btnDescargarSinExp").onclick = ()=>{
+  const headers = ["FUA","Fecha atención","Servicio","Profesión","Especialidad","Diagnóstico","Categoría","Establecimiento"];
+  const rows = SIN_EXPLICACION_ACTUAL.map(r=>[r.fua, r.fecha_atencion, r.servicio, r.profesion, r.especialidad, r.diagnostico, r.categoria, r.eess]);
+  descargarCSV(`sin_valorizar_${$("anio").value}_${$("mes").value}.csv`, headers, rows);
+};
 
 /* ══════════════════════════════════════════ TABS ══════════════════════════════════════════ */
 function activarTab(nombre){
@@ -673,7 +749,7 @@ function activarTab(nombre){
     Profesional:"VALORIZACIÓN POR PROFESIONAL — USPP SATIPO",
     Matriz:"MATRIZ DE VALORIZACIÓN — USPP SATIPO",
     Ranking:"RANKING POR PROFESIONAL — USPP SATIPO",
-    Percapita:"IMPACTO DEL PAGO PER CÁPITA — USPP SATIPO"
+    Percapita:"ATENCIONES NO VALORIZADAS — USPP SATIPO"
   };
   $("printTitle").textContent = titulos[nombre];
 }
@@ -725,7 +801,9 @@ async function render(){
 
   if(!dTodos.length){
     $("estado").textContent = "⚠ Sin valorización en este periodo";
-    ["topServicios","topDiagnosticos","porComponente","percapDiagnosticos","percapServicios"].forEach(id=>$(id).innerHTML="");
+    ["topServicios","topDiagnosticos","porComponente","percapDiagnosticos","percapServicios",
+     "sinexpProfesion","sinexpServicios","sinexpDiagnosticos"].forEach(id=>$(id).innerHTML="");
+    $("valorizacionBar").innerHTML=""; $("tablaSinExplicacion").innerHTML="";
     $("obsBar").innerHTML=""; $("profesionalGrid").innerHTML=""; $("matrizProfesional").innerHTML=""; $("rankingLista").innerHTML="";
     return;
   }
