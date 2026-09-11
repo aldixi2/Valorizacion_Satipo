@@ -269,6 +269,18 @@ def leer_valorizacion(paths):
                 "valor_bruto_apo_sis": float(val("valor_bruto_apo_sis") or 0),
                 "valor_neto_sis": float(val("valor_neto_sis") or 0),
             }
+            r = registros[fua]
+            if r["valor_bruto_sis"] > 0:
+                r["motivo_no_valorizado"] = None
+            elif r["diagnostico_percapita"]:
+                r["motivo_no_valorizado"] = "per_capita"
+            elif not r["especialidad"]:
+                # Por el convenio: sin médico especialista (RNE) registrado en el
+                # FUA, la prestación tampoco se valoriza aunque el diagnóstico
+                # no esté en el Anexo 19.
+                r["motivo_no_valorizado"] = "sin_especialista"
+            else:
+                r["motivo_no_valorizado"] = "sin_explicacion"
         print(f"  ✓ {path.name}: {len(df):,} filas leídas")
     return registros
 
@@ -289,6 +301,7 @@ CAND_RATENDET = {
     "ppdd": ["PPDD", "Punto Digitacion", "Punto de Digitacion"],
     "eess_registro": ["EESS"],
     "estado_fua": ["Estado FUA"],
+    "importe_referencial": ["Importe Referencial"],
 }
 
 
@@ -324,6 +337,7 @@ def leer_ratendet_excel(path):
             "ppdd": val("ppdd"),
             "eess_registro": val("eess_registro"),
             "estado_fua": val("estado_fua"),
+            "importe_referencial": float(val("importe_referencial") or 0),
         }
     return registros
 
@@ -351,6 +365,7 @@ def leer_ratendet_json(path):
             "ppdd": r.get("punto_digitacion") or r.get("ppdd"),
             "eess_registro": r.get("establecimiento") or r.get("eess"),
             "estado_fua": r.get("estado_fua"),
+            "importe_referencial": r.get("importe_referencial"),
         }
     return registros
 
@@ -406,6 +421,7 @@ def cruzar_y_guardar(valorizacion: dict, ratendet: dict):
                     "eess_registro": prod["eess_registro"],
                     "estado_fua": prod["estado_fua"],
                     "lag_dias": dias_entre(v["fecha_atencion"], prod["fecha_registro"]),
+                    "importe_referencial": prod.get("importe_referencial") or 0,
                 }
             )
         else:
@@ -421,6 +437,7 @@ def cruzar_y_guardar(valorizacion: dict, ratendet: dict):
                     "eess_registro": None,
                     "estado_fua": None,
                     "lag_dias": None,
+                    "importe_referencial": 0,
                 }
             )
 
@@ -447,17 +464,29 @@ def cruzar_y_guardar(valorizacion: dict, ratendet: dict):
     with open(OUT_DIR / "manifest.json", "w", encoding="utf-8") as f:
         json.dump(manifest, f, ensure_ascii=False, indent=2)
 
-    total_regs = sum(len(regs) for regs in buckets.values())
-    total_valor = sum(r["valor_bruto_sis"] for regs in buckets.values() for r in regs)
-    percap_n = sum(1 for regs in buckets.values() for r in regs if r["diagnostico_percapita"])
-    percap_valor = sum(r["valor_bruto_sis"] for regs in buckets.values() for r in regs if r["diagnostico_percapita"])
+    todas = [r for regs in buckets.values() for r in regs]
+    total_regs = len(todas)
+    total_valor = sum(r["valor_bruto_sis"] for r in todas)
+    valorizadas = [r for r in todas if r["valor_bruto_sis"] > 0]
+    percap = [r for r in todas if r["motivo_no_valorizado"] == "per_capita"]
+    sin_esp = [r for r in todas if r["motivo_no_valorizado"] == "sin_especialista"]
+    sin_exp = [r for r in todas if r["motivo_no_valorizado"] == "sin_explicacion"]
+    potencial_sin_exp = sum(r["importe_referencial"] for r in sin_exp)
+    potencial_sin_esp = sum(r["importe_referencial"] for r in sin_esp)
 
     print(f"\nTotal FUA valorización: {len(valorizacion):,}")
     print(f"Con profesional de salud identificado (cruce por FUA): {encontrados:,} ({100*encontrados/max(len(valorizacion),1):.1f}%)")
     print(f"Meses generados: {len(buckets)}")
     print(f"\nValor Bruto SIS total: S/ {total_valor:,.0f}")
-    print(f"Atenciones con diagnóstico del Anexo de per cápita: {percap_n:,} ({100*percap_n/max(total_regs,1):.1f}%)"
-          f" — S/ {percap_valor:,.0f} de esas atenciones")
+    print(f"  1) Valorizadas (>0):                 {len(valorizadas):6,d} ({100*len(valorizadas)/max(total_regs,1):.1f}%)")
+    print(f"  2) Cero, per cápita (Anexo 19):       {len(percap):6,d} ({100*len(percap)/max(total_regs,1):.1f}%)")
+    print(f"  3) Cero, sin especialista (RNE):      {len(sin_esp):6,d} ({100*len(sin_esp)/max(total_regs,1):.1f}%)")
+    print(f"  4) Cero, SIN explicación (revisar):   {len(sin_exp):6,d} ({100*len(sin_exp)/max(total_regs,1):.1f}%)")
+    print(f"\nSimulación con Importe Referencial (RAtenDet):")
+    print(f"  Si se valorizara el grupo 4 (sin explicación): +S/ {potencial_sin_exp:,.0f}")
+    print(f"  Si además se registrara especialista en el grupo 3: +S/ {potencial_sin_esp:,.0f}")
+    print(f"  Potencial total adicional: S/ {potencial_sin_exp + potencial_sin_esp:,.0f}"
+          f"  (nuevo total simulado: S/ {total_valor + potencial_sin_exp + potencial_sin_esp:,.0f})")
 
 
 # ============================================================================

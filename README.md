@@ -45,38 +45,49 @@ salud está en 0% porque el único RAtenDet que me pasaste es de agosto
 la pestaña "Por profesional" se llena. Mientras tanto, "Resumen" y
 "Per cápita" ya funcionan al 100% porque no necesitan ese cruce.
 
-## 2. Por qué el total "se ve poco" en algunas vistas
+## 2. Por qué el total "se ve poco" en algunas vistas, y la simulación
 
 Dos cosas distintas que se pueden confundir:
 
 - **"Resumen" y los KPI de arriba siempre muestran el 100%** de la
-  valorización del Excel, tenga o no cruce con el profesional. Si ahí
-  ves S/ 923,931 en total (ene-may 2026), ese es el número real.
+  valorización del Excel, tenga o no cruce con el profesional.
 - **"Por profesional", "Matriz" y "Ranking" solo muestran lo que tiene
-  cruce encontrado.** Hoy eso está en 0% (ver sección 1) porque aún no
-  corriste el script con tus RAtenDet de esos meses — por diseño, no le
-  puedo poner nombre a una atención que no crucé. En cuanto corras el
-  script con los RAtenDet correctos, esas 3 pestañas se llenan.
+  cruce encontrado.** Corre el script con tus RAtenDet del periodo para
+  que se llenen.
 
-Aparte de eso, hay un hallazgo real en tus datos (no es un error del
-dashboard): de las 23,682 atenciones de enero-mayo, **solo 18.1% tienen
-Valor Bruto SIS mayor a cero** (S/ 923,931 en total). El resto:
+Aparte de eso, la pestaña **"No valorizadas"** desglosa en 4 grupos por
+qué una atención queda en Valor Bruto SIS = 0:
 
-- **63.6%** tiene diagnóstico del Anexo 19 → per cápita, esperado en 0.
-- **18.3% (4,330 atenciones) no tiene diagnóstico del Anexo y aun así
-  está en cero** — esto es lo que revisar. La pestaña **"No
-  valorizadas"** te desglosa esto por profesión, servicio y
-  diagnóstico, y trae una tabla descargable en CSV con el detalle
-  (FUA, fecha, servicio, profesión, diagnóstico) para que hagas
-  seguimiento.
+1. **Per cápita (Anexo 19)** — el diagnóstico está en el Anexo → cero
+   esperado, no es un problema.
+2. **Sin especialista (RNE)** — el convenio exige médico especialista
+   con RNE para valorizar fuera de la cápita; si el campo ESPECIALISTA
+   de tu Excel viene vacío, el script asume que no aplicó y también lo
+   marca como "esperado en cero".
+3. **Sin explicación** — ni lo uno ni lo otro. Esto sí es para revisar:
+   trae desglose por profesión/servicio y una tabla descargable en CSV
+   (FUA, fecha, servicio, profesión, diagnóstico — sin datos de
+   paciente).
+
+En tu muestra de enero-mayo 2026: 18.1% valoriza, 63.6% per cápita,
+16.9% sin especialista, y solo **1.4% (329 atenciones) sin
+explicación real** — mucho más preciso que antes de meter la regla del
+especialista.
+
+**Simulación de ganancia potencial:** usa la columna "Importe
+Referencial" del RAtenDet (la misma fila que mencionaste) para calcular
+cuánto más se generaría si se corrigieran los grupos 2 y 3. Esto **solo
+funciona donde hubo cruce por FUA** — si sale S/ 0, es porque aún no
+has corrido el script con tus RAtenDet reales del periodo, no porque no
+haya nada que ganar.
 
 Un caso puntual que puede sorprender: **atención de parto por
-obstetriz** — revisé y el diagnóstico O800/O809 (parto único
-espontáneo) SÍ está en el Anexo 19, así que su Valor Bruto SIS en cero
-es "correcto" según la regla de la 22.4 (cae en per cápita). Si te
-parece que el parto no debería estar tratado igual que una consulta
-simple, eso ya es una discusión de política de pago con SIS/DIRESA, no
-algo que el dashboard pueda corregir por su cuenta.
+obstetriz** — el diagnóstico O800/O809 (parto único espontáneo) SÍ está
+en el Anexo 19, así que su Valor Bruto SIS en cero es "correcto" según
+la 22.4 (cae en per cápita). Si te parece que el parto no debería
+tratarse igual que una consulta simple, esa ya es una discusión de
+tarifario con SIS/DIRESA, no algo que el dashboard pueda corregir por
+su cuenta.
 
 ## 3. Diagnósticos con cobertura per cápita (Anexo 19)
 
@@ -120,7 +131,14 @@ python -m http.server 8765
 ```
 y abre `http://localhost:8765/index.html`.
 
-## 5. Qué trae cada pestaña
+## 5. Filtro "Todos los meses"
+
+En el selector de mes, "Todos los meses" acumula el año completo:
+KPIs, gráficos y tablas pasan a mostrar el total anual, la matriz
+cambia de días a los 12 meses como columnas, y aparece un gráfico de
+tendencia mensual arriba de "Resumen".
+
+## 6. Qué trae cada pestaña
 
 - **Resumen**: servicios con mayor valorización, valor por componente
   (servicio/medicamento/insumo/apoyo al diagnóstico), diagnósticos más
@@ -136,7 +154,7 @@ y abre `http://localhost:8765/index.html`.
   van a per cápita (Anexo), y sin explicación (revisar). Trae tabla
   descargable en CSV del tercer grupo para hacer seguimiento.
 
-## 6. Datos de pacientes
+## 7. Datos de pacientes
 
 Nombre, DNI y fecha de nacimiento del **paciente** nunca se guardan en
 los JSON. Sí se guarda el DNI y nombre del **profesional de salud**
