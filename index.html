@@ -345,37 +345,39 @@
     <div class="filtros-nota">
       De todas las atenciones del periodo: <b>valorizan</b> (Valor Bruto SIS &gt; 0), van a <b>per cápita</b> (diagnóstico
       del Anexo 19 → esperado en cero), quedan <b>sin especialista</b> (el convenio exige médico especialista con RNE
-      para valorizar fuera de la cápita → también esperado en cero), o quedan <b>sin explicación</b> — este último grupo
-      es el que conviene revisar.
+      para valorizar fuera de la cápita → también esperado en cero), o quedan <b>Observados por PSA</b> — este último
+      grupo es el que conviene revisar.
     </div>
 
     <div class="hero4">
       <div class="hero-card hero-ok"><b id="pcValorizadas">0</b><span>Sí valorizan</span></div>
       <div class="hero-card hero-cap"><b id="pcPercapita">0</b><span>Per cápita (Anexo 19)</span></div>
       <div class="hero-card hero-esp"><b id="pcSinEspecialista">0</b><span>Sin especialista (RNE)</span></div>
-      <div class="hero-card hero-bad"><b id="pcSinExplicacion">0</b><span>Sin explicación — revisar</span></div>
+      <div class="hero-card hero-bad"><b id="pcSinExplicacion">0</b><span>Observados por PSA — revisar</span></div>
     </div>
     <div class="donut-wrap" id="motivoDonut" style="margin-bottom:18px"></div>
 
     <div class="sim-card">
-      <h3>💰 Simulación: cuánto más se podría generar</h3>
+      <h3>💰 Simulación: cuánto generaríamos si se valorizaran todas las FUA</h3>
       <div class="sim-grid">
         <div class="sim-item"><b id="simActual">S/ 0</b><span>Valor Bruto SIS actual</span></div>
-        <div class="sim-item"><b id="simPotencial">+S/ 0</b><span>Potencial adicional (Importe Referencial)</span></div>
-        <div class="sim-item"><b id="simTotal">S/ 0</b><span>Total simulado si se corrige</span></div>
+        <div class="sim-item"><b id="simPotencial">+S/ 0</b><span>Potencial si TODA FUA en cero usara su Importe Referencial</span></div>
+        <div class="sim-item"><b id="simTotal">S/ 0</b><span>Total simulado (100% de las FUA valorizadas)</span></div>
       </div>
       <div class="sim-nota" id="simNota">
-        Usa la columna "Importe Referencial" del RAtenDet para las atenciones sin especialista o sin explicación.
-        Solo se puede calcular donde hubo cruce por FUA — mientras la cobertura del cruce sea baja, este número
-        estará subestimado.
+        Toma el Importe Referencial del RAtenDet para cada FUA que hoy está en cero (per cápita, sin especialista y
+        Observados por PSA) y lo suma al valor actual. Solo se puede calcular donde hubo cruce por FUA — mientras la
+        cobertura del cruce sea baja, este número estará subestimado. Ojo: las de per cápita ya se pagan aparte, por
+        adelantado, con el monto fijo mensual por asegurado adscrito — este total es "cuánto valdría todo por
+        prestación individual", no dinero adicional garantizado por encima de la cápita.
       </div>
     </div>
 
     <div class="resumen-grid">
       <div>
-        <h3 class="subtitulo" style="color:#9B1C1C">Sin explicación — por profesión</h3>
+        <h3 class="subtitulo" style="color:#9B1C1C">Observados por PSA — por profesión</h3>
         <div id="sinexpProfesion"></div>
-        <h3 class="subtitulo" style="margin-top:16px;color:#9B1C1C">Sin explicación — por servicio</h3>
+        <h3 class="subtitulo" style="margin-top:16px;color:#9B1C1C">Observados por PSA — por servicio</h3>
         <div id="sinexpServicios"></div>
       </div>
       <div>
@@ -386,7 +388,7 @@
       </div>
     </div>
 
-    <h3 class="subtitulo" style="margin-top:18px;color:#9B1C1C">Detalle: atenciones SIN explicación (para seguimiento)</h3>
+    <h3 class="subtitulo" style="margin-top:18px;color:#9B1C1C">Detalle: Observados por PSA (para seguimiento)</h3>
     <div class="muted" style="margin-bottom:8px">Sin datos de paciente. Hasta 500 filas en pantalla; descarga el CSV para ver todas.</div>
     <button class="btn-cl no-print" id="btnDescargarSinExp" style="margin-bottom:10px">⬇️ Descargar CSV completo</button>
     <div class="scroll"><table id="tablaSinExplicacion"></table></div>
@@ -796,22 +798,28 @@ function renderNoValorizadas(dTodos){
     {label:"Sí valorizan", valor:valorizadas.length, color:"#0E9F6E", fmt:v=>v.toLocaleString("es-PE")},
     {label:"Per cápita (Anexo 19)", valor:percap.length, color:"#F0BE72", fmt:v=>v.toLocaleString("es-PE")},
     {label:"Sin especialista (RNE)", valor:sinEsp.length, color:"#6D4FC2", fmt:v=>v.toLocaleString("es-PE")},
-    {label:"Sin explicación", valor:sinExp.length, color:"#DC2626", fmt:v=>v.toLocaleString("es-PE")},
+    {label:"Observados por PSA", valor:sinExp.length, color:"#DC2626", fmt:v=>v.toLocaleString("es-PE")},
   ], {size:160});
 
+  // Simulación: si TODAS las FUA en cero (per cápita + sin especialista + Observados por PSA)
+  // se valorizaran usando su Importe Referencial del RAtenDet.
   const valorActual = dTodos.reduce((a,r)=>a+(r.valor_bruto_sis||0),0);
-  const potSinExp = sinExp.reduce((a,r)=>a+(r.importe_referencial||0),0);
-  const potSinEsp = sinEsp.reduce((a,r)=>a+(r.importe_referencial||0),0);
-  const potencial = potSinExp + potSinEsp;
+  const enCero = [...percap, ...sinEsp, ...sinExp];
+  const potencial = enCero.reduce((a,r)=>a+(r.importe_referencial||0),0);
   $("simActual").textContent = fmtSoles(valorActual);
   $("simPotencial").textContent = "+"+fmtSoles(potencial);
   $("simTotal").textContent = fmtSoles(valorActual+potencial);
-  const conReferencial = dTodos.filter(r=>r.importe_referencial>0).length;
+  const conReferencial = enCero.filter(r=>r.importe_referencial>0).length;
   $("simNota").innerHTML = conReferencial===0
-    ? `Todavía no hay <b>Importe Referencial</b> cruzado en este periodo (0 atenciones con cruce y monto &gt; 0) —
-       corre <code>consolidar_valorizacion.py</code> con tus RAtenDet reales de este mes para que este número deje de ser S/ 0.`
-    : `Calculado sobre ${conReferencial.toLocaleString("es-PE")} atenciones con Importe Referencial disponible vía el cruce.
-       De "sin explicación": +${fmtSoles(potSinExp)}. De "sin especialista" (si se registrara uno): +${fmtSoles(potSinEsp)}.`;
+    ? `Todavía no hay <b>Importe Referencial</b> cruzado en este periodo (0 de ${enCero.length.toLocaleString("es-PE")}
+       atenciones en cero tienen un monto &gt; 0 vía el cruce) — corre <code>consolidar_valorizacion.py</code> con tus
+       RAtenDet reales de este mes para que este número deje de ser S/ 0. Nota: en el único RAtenDet real que me
+       compartiste (agosto, CANAAN), la columna Importe Referencial venía en 0.0 en las 339 filas — revisa si ese
+       campo sí trae montos reales en tus archivos de enero-mayo antes de confiar en esta simulación.`
+    : `Calculado sobre ${conReferencial.toLocaleString("es-PE")} de ${enCero.length.toLocaleString("es-PE")} atenciones
+       en cero, que sí tienen Importe Referencial vía el cruce. Recuerda: lo de per cápita ya se paga por adelantado
+       con la cápita mensual — esto no es dinero garantizado extra, es el valor equivalente si todo se pagara por
+       prestación individual.`;
 
   renderBarSection("sinexpProfesion", agrupar(sinExp,"profesion").slice(0,10), v=>v.toLocaleString("es-PE"));
   renderBarSection("sinexpServicios", agrupar(sinExp,"servicio").slice(0,10), v=>v.toLocaleString("es-PE"));
@@ -832,7 +840,7 @@ function renderNoValorizadas(dTodos){
 $("btnDescargarSinExp").onclick = ()=>{
   const headers = ["FUA","Fecha atención","Servicio","Profesión","Especialidad","Diagnóstico","Categoría","Establecimiento","Importe Referencial"];
   const rows = SIN_EXPLICACION_ACTUAL.map(r=>[r.fua, r.fecha_atencion, r.servicio, r.profesion, r.especialidad, r.diagnostico, r.categoria, r.eess, r.importe_referencial||0]);
-  descargarCSV(`sin_explicacion_${$("anio").value}_${$("mes").value}.csv`, headers, rows);
+  descargarCSV(`observados_psa_${$("anio").value}_${$("mes").value}.csv`, headers, rows);
 };
 
 /* ══════════════════════════════════════════ TABS ══════════════════════════════════════════ */

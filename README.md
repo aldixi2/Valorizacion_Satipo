@@ -64,22 +64,33 @@ qué una atención queda en Valor Bruto SIS = 0:
    con RNE para valorizar fuera de la cápita; si el campo ESPECIALISTA
    de tu Excel viene vacío, el script asume que no aplicó y también lo
    marca como "esperado en cero".
-3. **Sin explicación** — ni lo uno ni lo otro. Esto sí es para revisar:
-   trae desglose por profesión/servicio y una tabla descargable en CSV
-   (FUA, fecha, servicio, profesión, diagnóstico — sin datos de
-   paciente).
+3. **Observados por PSA** — ni lo uno ni lo otro. Esto sí es para
+   revisar: trae desglose por profesión/servicio y una tabla
+   descargable en CSV (FUA, fecha, servicio, profesión, diagnóstico —
+   sin datos de paciente).
 
 En tu muestra de enero-mayo 2026: 18.1% valoriza, 63.6% per cápita,
-16.9% sin especialista, y solo **1.4% (329 atenciones) sin
-explicación real** — mucho más preciso que antes de meter la regla del
-especialista.
+16.9% sin especialista, y solo **1.4% (329 atenciones) quedan como
+Observados por PSA** — mucho más preciso que antes de meter la regla
+del especialista. (Ojo: revisé el campo "Observado_PSA" propio de esos
+329 registros y en tu muestra viene "NoObs" en el 100% de los casos —
+o sea, el nombre es el que pediste, pero no coincide 1 a 1 con esa
+columna específica del Excel; si más adelante quieres que la
+clasificación además considere esa columna, lo ajustamos.)
 
-**Simulación de ganancia potencial:** usa la columna "Importe
-Referencial" del RAtenDet (la misma fila que mencionaste) para calcular
-cuánto más se generaría si se corrigieran los grupos 2 y 3. Esto **solo
-funciona donde hubo cruce por FUA** — si sale S/ 0, es porque aún no
-has corrido el script con tus RAtenDet reales del periodo, no porque no
-haya nada que ganar.
+**Simulación de cuánto generaríamos si se valorizaran TODAS las FUA:**
+toma el "Importe Referencial" del RAtenDet (la misma fila que me
+señalaste, en tu carpeta `BASE DE DATOS 2`) y lo suma para **las tres
+categorías que hoy están en cero** — per cápita, sin especialista y
+Observados por PSA — dando el total que se generaría si cada atención
+se pagara por prestación individual. Esto **solo funciona donde hubo
+cruce por FUA**, y ojo: en el único RAtenDet real que me compartiste
+(agosto, EESS CANAAN), la columna Importe Referencial venía en 0.0 en
+las 339 filas — antes de confiar en la simulación, confirma que ese
+campo sí trae montos reales en tus archivos de enero-mayo (o de los
+años anteriores). Además, lo de per cápita ya se paga por adelantado
+con la cápita mensual, así que ese total no es "dinero extra
+garantizado", es el valor equivalente bajo pago por prestación pura.
 
 Un caso puntual que puede sorprender: **atención de parto por
 obstetriz** — el diagnóstico O800/O809 (parto único espontáneo) SÍ está
