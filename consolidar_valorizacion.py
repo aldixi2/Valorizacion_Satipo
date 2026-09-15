@@ -180,6 +180,7 @@ CAND_VALORIZ = {
     "periodo": ["Periodo"],
     "mes": ["Mes"],
     "eess": ["CodigoEESS"],
+    "nivel": ["Nivel"],
     "categoria": ["Categoria"],
     "servicio_id": ["Servicio"],
     "servicio": ["ServicioDesc"],
@@ -270,6 +271,12 @@ def leer_valorizacion(paths):
                 "valor_neto_sis": float(val("valor_neto_sis") or 0),
             }
             r = registros[fua]
+            nivel_raw = val("nivel")
+            if nivel_raw is not None and str(nivel_raw).strip():
+                r["nivel"] = str(nivel_raw).strip()
+            else:
+                m = re.match(r"^([IVX]+)", str(r["categoria"] or ""))
+                r["nivel"] = m.group(1) if m else None
             if r["valor_bruto_sis"] > 0:
                 r["motivo_no_valorizado"] = None
             elif r["diagnostico_percapita"]:

@@ -263,9 +263,10 @@
     <div class="row">
       <div class="fg"><label>Año (de atención)</label><select id="anio"></select></div>
       <div class="fg"><label>Mes (de atención)</label><select id="mes"></select></div>
-      <div class="fg" style="min-width:200px"><label>Establecimiento</label><select id="estab"><option value="">Todos</option></select></div>
+      <div class="fg" style="min-width:150px"><label>Nivel</label><select id="nivelSel"><option value="">Todos</option></select></div>
       <div class="fg" style="min-width:220px"><label>Servicio</label><select id="servicioSel"><option value="">Todos</option></select></div>
       <div class="fg" style="min-width:180px"><label>Profesión</label><select id="profesionSel"><option value="">Todas</option></select></div>
+      <div class="fg" style="min-width:220px"><label>Especialidad</label><select id="especialidadSel"><option value="">Todas</option></select></div>
       <div class="fg" style="min-width:200px"><label>Buscar profesional</label><input id="profSearch" placeholder="Nombre o DNI..."></div>
       <div style="display:flex;gap:6px">
         <button class="btn-ap" id="btn">Aplicar</button>
@@ -293,6 +294,9 @@
       <div id="tendenciaAnualChart"></div>
       <div style="height:16px"></div>
     </div>
+
+    <h3 class="subtitulo" style="margin-top:4px">Valorización por especialidad médica — ¿cuál genera más?</h3>
+    <div id="porEspecialidad" style="margin-bottom:18px"></div>
 
     <div class="resumen-grid">
       <div>
@@ -549,20 +553,22 @@ async function fetchAnio(anio){
 
 $("anio").addEventListener("change", ()=>{ fillMeses(); render(); });
 $("mes").addEventListener("change", render);
-$("estab").addEventListener("change", render);
+$("nivelSel").addEventListener("change", render);
+$("especialidadSel").addEventListener("change", render);
 $("servicioSel").addEventListener("change", render);
 $("profesionSel").addEventListener("change", render);
 $("profSearch").addEventListener("input", render);
 $("btn").onclick = render;
-$("btnReset").onclick = ()=>{ $("estab").value=""; $("servicioSel").value=""; $("profesionSel").value=""; $("profSearch").value=""; render(); };
+$("btnReset").onclick = ()=>{ $("nivelSel").value=""; $("servicioSel").value=""; $("profesionSel").value=""; $("especialidadSel").value=""; $("profSearch").value=""; render(); };
 
 /* ══════════════════════════════════════════ FILTRADO ══════════════════════════════════════════ */
 function aplicarFiltrosBase(){
-  const estab=$("estab").value, servicio=$("servicioSel").value, profesion=$("profesionSel").value;
+  const nivel=$("nivelSel").value, servicio=$("servicioSel").value, profesion=$("profesionSel").value, especialidad=$("especialidadSel").value;
   return RAW.filter(r=>{
-    if(estab && r.eess!==estab) return false;
+    if(nivel && r.nivel!==nivel) return false;
     if(servicio && r.servicio!==servicio) return false;
     if(profesion && r.profesion!==profesion) return false;
+    if(especialidad && r.especialidad!==especialidad) return false;
     return true;
   });
 }
@@ -580,9 +586,9 @@ function aplicarFiltroProfesional(base){
 function filtrosTexto(){
   const anio=$("anio").value, mes=$("mes").value;
   const mesTxt = mes==="todos" ? "Todos los meses" : (MONTHS.find(x=>String(x.n)===String(mes))?.t||mes);
-  const estab=$("estab").value?`EESS: ${$("estab").value}`:"EESS: Todos";
+  const nivel=$("nivelSel").value?`Nivel: ${$("nivelSel").value}`:"Nivel: Todos";
   const serv=$("servicioSel").value?`Servicio: ${$("servicioSel").value}`:"Servicio: Todos";
-  return `Periodo de atención: ${anio} — ${mesTxt}  |  ${estab}  |  ${serv}`;
+  return `Periodo de atención: ${anio} — ${mesTxt}  |  ${nivel}  |  ${serv}`;
 }
 function actualizarBannerFiltro(){ $("printFiltroBanner").innerHTML = `<div class="pf-desglose">${esc(filtrosTexto())}</div>`; }
 
@@ -671,6 +677,12 @@ function renderTendenciaAnual(datosAnio){
 }
 
 function renderResumen(dTodos, obsInfo){
+  const especialidadEntries = agruparValor(
+    dTodos.map(r=>({...r, _esp: r.especialidad || "Sin especialidad registrada (medicina general / otros)"})),
+    "_esp", r=>r.valor_bruto_sis||0
+  ).slice(0,12);
+  renderBarSection("porEspecialidad", especialidadEntries, fmtSoles);
+
   renderBarSection("topServicios", agruparValor(dTodos,"servicio",r=>r.valor_bruto_sis||0).slice(0,8), fmtSoles);
   renderBarSection("topDiagnosticos", agrupar(dTodos,"diagnostico").slice(0,8), v=>v.toLocaleString("es-PE"));
 
@@ -838,8 +850,8 @@ function renderNoValorizadas(dTodos){
   $("tablaSinExplicacion").innerHTML = html;
 }
 $("btnDescargarSinExp").onclick = ()=>{
-  const headers = ["FUA","Fecha atención","Servicio","Profesión","Especialidad","Diagnóstico","Categoría","Establecimiento","Importe Referencial"];
-  const rows = SIN_EXPLICACION_ACTUAL.map(r=>[r.fua, r.fecha_atencion, r.servicio, r.profesion, r.especialidad, r.diagnostico, r.categoria, r.eess, r.importe_referencial||0]);
+  const headers = ["FUA","Fecha atención","Servicio","Profesión","Especialidad","Diagnóstico","Categoría","Nivel","Establecimiento","Importe Referencial"];
+  const rows = SIN_EXPLICACION_ACTUAL.map(r=>[r.fua, r.fecha_atencion, r.servicio, r.profesion, r.especialidad, r.diagnostico, r.categoria, r.nivel, r.eess, r.importe_referencial||0]);
   descargarCSV(`observados_psa_${$("anio").value}_${$("mes").value}.csv`, headers, rows);
 };
 
@@ -883,10 +895,11 @@ async function render(){
   }
   RAW = datosMes;
 
-  const estabActual = $("estab").value;
-  const estabs = [...new Set(RAW.map(r=>r.eess).filter(Boolean))].sort();
-  $("estab").innerHTML = `<option value="">Todos</option>` + estabs.map(e=>`<option value="${esc(e)}">${esc(e)}</option>`).join("");
-  if(estabs.includes(estabActual)) $("estab").value = estabActual;
+  const nivelActual = $("nivelSel").value;
+  const ORDEN_NIVEL = {I:1, II:2, III:3};
+  const niveles = [...new Set(RAW.map(r=>r.nivel).filter(Boolean))].sort((a,b)=>(ORDEN_NIVEL[a]||9)-(ORDEN_NIVEL[b]||9));
+  $("nivelSel").innerHTML = `<option value="">Todos</option>` + niveles.map(n=>`<option value="${esc(n)}">Nivel ${esc(n)}</option>`).join("");
+  if(niveles.includes(nivelActual)) $("nivelSel").value = nivelActual;
 
   const servActual = $("servicioSel").value;
   const servicios = [...new Set(RAW.map(r=>r.servicio).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"es"));
@@ -898,11 +911,17 @@ async function render(){
   $("profesionSel").innerHTML = `<option value="">Todas</option>` + profesiones.map(p=>`<option value="${esc(p)}">${esc(p)}</option>`).join("");
   if(profesiones.includes(profActual)) $("profesionSel").value = profActual;
 
-  const estabSel=$("estab").value, servSel=$("servicioSel").value, profSel=$("profesionSel").value;
+  const espActual = $("especialidadSel").value;
+  const especialidades = [...new Set(RAW.map(r=>r.especialidad).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"es"));
+  $("especialidadSel").innerHTML = `<option value="">Todas</option>` + especialidades.map(e=>`<option value="${esc(e)}">${esc(e)}</option>`).join("");
+  if(especialidades.includes(espActual)) $("especialidadSel").value = espActual;
+
+  const nivelSel=$("nivelSel").value, servSel=$("servicioSel").value, profSel=$("profesionSel").value, espSel=$("especialidadSel").value;
   const filtroExtra = r=>{
-    if(estabSel && r.eess!==estabSel) return false;
+    if(nivelSel && r.nivel!==nivelSel) return false;
     if(servSel && r.servicio!==servSel) return false;
     if(profSel && r.profesion!==profSel) return false;
+    if(espSel && r.especialidad!==espSel) return false;
     return true;
   };
   const totAnt = (datosMesAnt||[]).filter(filtroExtra).reduce((a,r)=>a+(r.valor_bruto_sis||0),0);
@@ -915,7 +934,7 @@ async function render(){
 
   if(!dTodos.length){
     $("estado").textContent = "⚠ Sin valorización en este periodo";
-    ["topServicios","topDiagnosticos","sinexpProfesion","sinexpServicios","sinespServicios","percapDiagnosticos"].forEach(id=>$(id).innerHTML="");
+    ["topServicios","topDiagnosticos","porEspecialidad","sinexpProfesion","sinexpServicios","sinespServicios","percapDiagnosticos"].forEach(id=>$(id).innerHTML="");
     $("porComponente").innerHTML=""; $("obsDonut").innerHTML=""; $("motivoDonut").innerHTML="";
     $("profesionalGrid").innerHTML=""; $("matrizProfesional").innerHTML=""; $("rankingLista").innerHTML=""; $("tablaSinExplicacion").innerHTML="";
     $("bloqueTendenciaAnual").style.display="none";

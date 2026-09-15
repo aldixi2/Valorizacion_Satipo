@@ -149,7 +149,21 @@ KPIs, gráficos y tablas pasan a mostrar el total anual, la matriz
 cambia de días a los 12 meses como columnas, y aparece un gráfico de
 tendencia mensual arriba de "Resumen".
 
-## 6. Qué trae cada pestaña
+## 6. Filtros de Nivel y Especialidad
+
+- **Nivel** reemplazó al filtro de Establecimiento. Usa la columna
+  `Nivel` de tu Excel si viene llena; si viene vacía (como en tu
+  muestra actual), la deriva del número romano de `Categoria`
+  (ej. "II-1" → Nivel "II"). Cuando agregues más establecimientos con
+  `Nivel` sí poblado, el filtro lo toma tal cual viene del Excel.
+- **Especialidad** es nuevo: filtra por la columna `ESPECIALISTA` de tu
+  Excel (GINECOLOGÍA Y OBSTETRICIA, PEDIATRÍA, CIRUGÍA GENERAL, etc.).
+  En "Resumen" hay un gráfico de barras **"Valorización por
+  especialidad médica"** que muestra cuál genera más, incluyendo un
+  grupo "Sin especialidad registrada" para las atenciones de medicina
+  general/otros.
+
+## 7. Qué trae cada pestaña
 
 - **Resumen**: servicios con mayor valorización, valor por componente
   (servicio/medicamento/insumo/apoyo al diagnóstico), diagnósticos más
@@ -165,7 +179,7 @@ tendencia mensual arriba de "Resumen".
   van a per cápita (Anexo), y sin explicación (revisar). Trae tabla
   descargable en CSV del tercer grupo para hacer seguimiento.
 
-## 7. Datos de pacientes
+## 8. Datos de pacientes
 
 Nombre, DNI y fecha de nacimiento del **paciente** nunca se guardan en
 los JSON. Sí se guarda el DNI y nombre del **profesional de salud**
