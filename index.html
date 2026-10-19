@@ -160,6 +160,39 @@
     .rk-toolbar{display:none !important}
   }
   #printHeader,#printFiltroBanner,#printFooter{display:none}
+  /* Rediseño UX: lectura rápida, gráficos amplios y adaptación móvil */
+  :root{--navy:#123A5A;--navy-2:#0B2842;--blue:#246B9B;--teal:#0F9D8A;--azulclaro:#E8F2F8;--texto:#172B3D;--muted:#627487;--borde:#D9E4EC;--borde-dato:#E3EAF0;--papel:#F2F6FA;--blanco:#FFFFFF;--radio:18px}
+  body{background:var(--papel);font-size:14px}
+  header{padding:16px clamp(18px,3vw,44px);background:linear-gradient(112deg,#103654 0%,#164C70 62%,#136D75 100%);box-shadow:0 8px 24px rgba(16,47,71,.16)}
+  .brand-texto h1{font-size:18px}.brand-texto .sub{font-size:12px;color:#D2E5F1}
+  .wrap{max-width:1720px;padding:26px clamp(16px,3vw,42px) 48px}
+  .card{border-color:#E2EAF0;border-radius:18px;padding:22px 24px;margin-bottom:18px;box-shadow:0 4px 16px rgba(28,55,78,.045)}
+  .card-titulo{font-size:16px;margin-bottom:18px;padding-bottom:13px;border-color:#E8EEF3}
+  .card-titulo .icono{width:34px;height:34px;border-radius:11px;background:#E8F2F8;color:#17668E}
+  h3.subtitulo{font-size:14px;color:#284D68;margin:8px 0 14px}
+  .kpis{gap:14px;margin-bottom:14px}
+  .kpi{border:1px solid #E2EAF0;border-top:3px solid var(--navy);border-radius:16px;padding:18px 50px 18px 20px;box-shadow:0 3px 12px rgba(28,55,78,.04)}
+  .kpi .klabel{font-size:11px;letter-spacing:.65px}.kpi .kval{font-size:clamp(24px,2vw,32px)}.kpi .ksub{font-size:12px;margin-top:8px}
+  .filtros-nota{font-size:12px;background:#F7FAFC;border:1px solid #E5EDF3;border-radius:12px;padding:12px 14px;margin-bottom:16px}
+  .row{gap:12px}.fg{flex:1 1 160px;min-width:150px}.fg label{font-size:11px}.fg select,.fg input{min-height:42px;padding:10px 12px;border-color:#D5E0E8;border-radius:10px;font-size:13px}
+  .fg select:focus,.fg input:focus{outline:3px solid rgba(36,107,155,.16);border-color:#246B9B}
+  .btn-ap,.btn-cl,.btn-print{min-height:42px;border-radius:10px;font-size:13px;transition:transform .16s ease,box-shadow .16s ease,background .16s ease}
+  .btn-ap{background:#14547A}.btn-print{background:#11A38F}.btn-print:hover{background:#0B8878;transform:translateY(-1px)}
+  .tabs{gap:8px}.tab{font:600 13px var(--f-cuerpo);border-radius:11px;padding:11px 17px;background:transparent;appearance:none;cursor:pointer;transition:background .16s ease,color .16s ease}
+  .tab:focus-visible,.btn-ap:focus-visible,.btn-cl:focus-visible,.btn-print:focus-visible,.rk-metric-btn:focus-visible{outline:3px solid rgba(36,107,155,.3);outline-offset:2px}
+  .tab.active{background:#14547A;box-shadow:0 4px 10px rgba(20,84,122,.18)}
+  .card.soft{padding:10px;background:#EAF1F6;border-color:#EAF1F6}
+  .resumen-grid{grid-template-columns:1fr 1fr;gap:24px}
+  .chart-scroll{width:100%;overflow-x:auto;overscroll-behavior-inline:contain;padding:2px 2px 8px}#tendenciaAnualChart{overflow-x:auto;overscroll-behavior-inline:contain}
+  .chart-svg{min-width:760px}
+  .donut-wrap{gap:24px;padding:8px 0}.donut-wrap svg{width:190px;height:190px;flex:0 0 190px}.donut-legend{gap:11px;font-size:13px;min-width:220px}
+  .donut-legend i{width:13px;height:13px;border-radius:4px}
+  .prof-grid{gap:16px}.prof-card{border-radius:16px;box-shadow:0 3px 12px rgba(28,55,78,.04)}
+  .rk-row{padding:12px;border-radius:12px}.hero-card{padding:18px;border-radius:16px}
+  .sim-card{background:linear-gradient(120deg,#113C5C,#17687B);border-radius:18px;padding:24px}
+  .scroll{border:1px solid #E3EAF0;border-radius:12px}table{font-size:12px}th{padding:11px 10px;background:#164B6D}td{padding:9px 10px}
+  @media(max-width:1000px){.resumen-grid{grid-template-columns:1fr}.wrap{padding:18px 14px 32px}.card{padding:18px}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media(max-width:620px){header{position:relative;align-items:flex-start;padding:14px}.brand-texto h1{font-size:15px;line-height:1.35}.brand img{height:36px}.header-derecha{width:100%;justify-content:space-between}.bloque-fechas{flex:1}.wrap{padding:12px 10px 28px}.card{padding:16px 14px;border-radius:15px;margin-bottom:12px}.kpis{gap:8px}.kpi{padding:14px 12px;border-radius:13px}.kpi .klabel{font-size:9px}.kpi .kval{font-size:21px}.kpi .ksub{font-size:10px}.kpi .kicon,.kpi-ring{display:none}.tabs{overflow-x:auto;flex-wrap:nowrap;padding-bottom:3px}.tab{white-space:nowrap;padding:10px 13px}.fg{flex:1 1 calc(50% - 12px);min-width:135px}.row>div:last-child{width:100%}.row>div:last-child button{flex:1}.chart-svg{min-width:700px}.donut-wrap{justify-content:center}.donut-wrap svg{width:150px;height:150px;flex-basis:150px}.donut-legend{min-width:175px;font-size:11px}.hero4{gap:8px}.hero-card{padding:12px 8px}.hero-card b{font-size:17px}.sim-card{padding:18px 16px}.rk-row{grid-template-columns:28px 32px 1fr;gap:7px}.rk-stats{grid-column:3;justify-content:flex-start}}
 </style>
 </head>
 <body>
@@ -277,11 +310,11 @@
 
   <div class="card soft no-print">
     <div class="tabs">
-      <div class="tab active" id="tabResumen"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="15" x2="3" y2="9"/><line x1="9" y1="15" x2="9" y2="5"/><line x1="15" y1="15" x2="15" y2="11"/></svg> Resumen</div>
-      <div class="tab" id="tabProfesional"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="6" r="3"/><path d="M3.5 15.5c0-3.3 2.5-5.3 5.5-5.3s5.5 2 5.5 5.3"/></svg> Por profesional</div>
-      <div class="tab" id="tabMatriz"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="2.5" width="13" height="13" rx="2"/><line x1="2.5" y1="7" x2="15.5" y2="7"/></svg> Matriz</div>
-      <div class="tab" id="tabRanking"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="14" x2="4" y2="9"/><line x1="9" y1="14" x2="9" y2="4"/><line x1="14" y1="14" x2="14" y2="11"/></svg> Ranking</div>
-      <div class="tab" id="tabPercapita"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="6.5"/><path d="M9 6v3l2 1.5"/></svg> No valorizadas</div>
+<button type="button" role="tab" aria-selected="true" class="tab active" id="tabResumen"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="15" x2="3" y2="9"/><line x1="9" y1="15" x2="9" y2="5"/><line x1="15" y1="15" x2="15" y2="11"/></svg> Resumen</button>
+<button type="button" role="tab" aria-selected="false" class="tab" id="tabProfesional"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="6" r="3"/><path d="M3.5 15.5c0-3.3 2.5-5.3 5.5-5.3s5.5 2 5.5 5.3"/></svg> Por profesional</button>
+<button type="button" role="tab" aria-selected="false" class="tab" id="tabMatriz"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="2.5" width="13" height="13" rx="2"/><line x1="2.5" y1="7" x2="15.5" y2="7"/></svg> Matriz</button>
+<button type="button" role="tab" aria-selected="false" class="tab" id="tabRanking"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="14" x2="4" y2="9"/><line x1="9" y1="14" x2="9" y2="4"/><line x1="14" y1="14" x2="14" y2="11"/></svg> Ranking</button>
+<button type="button" role="tab" aria-selected="false" class="tab" id="tabPercapita"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="6.5"/><path d="M9 6v3l2 1.5"/></svg> No valorizadas</button>
     </div>
   </div>
 
@@ -445,18 +478,18 @@ function truncar(s,n){ s=String(s); return s.length>n ? s.slice(0,n-1)+"…" : s
 function barChart(entries, formatoValor, opts={}){
   if(!entries.length) return `<div class="muted" style="padding:10px 0">Sin datos con estos filtros.</div>`;
   const color = opts.color || "#1B4A6E";
-  const labelW = 200, rowH = 26, barMaxW = 300, valW = 80;
+  const labelW = 240, rowH = 36, barMaxW = 440, valW = 110;
   const width = labelW + barMaxW + valW + 10;
   const max = Math.max(1, ...entries.map(e=>e.valor));
   const height = entries.length*rowH + 6;
   let rows = "";
   entries.forEach((e,i)=>{
-    const y = i*rowH + 3;
+    const y = i*rowH + 2;
     const w = Math.max(2, e.valor/max*barMaxW);
-    rows += `<text x="${labelW-8}" y="${y+15}" text-anchor="end" font-size="11" fill="#101826" font-family="IBM Plex Sans">${esc(truncar(e.label,30))}</text>`;
-    rows += `<rect x="${labelW}" y="${y+2}" width="${barMaxW}" height="16" rx="4" fill="#F0EEE4"/>`;
-    rows += `<rect x="${labelW}" y="${y+2}" width="${w}" height="16" rx="4" fill="${color}"/>`;
-    rows += `<text x="${labelW+barMaxW+10}" y="${y+15}" font-size="11" font-weight="700" fill="${color}" font-family="IBM Plex Mono">${esc(formatoValor(e.valor))}</text>`;
+    rows += `<text x="${labelW-8}" y="${y+22}" text-anchor="end" font-size="12" fill="#101826" font-family="IBM Plex Sans">${esc(truncar(e.label,30))}</text>`;
+    rows += `<rect x="${labelW}" y="${y+2}" width="${barMaxW}" height="22" rx="6" fill="#F0EEE4"/>`;
+    rows += `<rect x="${labelW}" y="${y+2}" width="${w}" height="22" rx="6" fill="${color}"/>`;
+    rows += `<text x="${labelW+barMaxW+10}" y="${y+22}" font-size="11" font-weight="700" fill="${color}" font-family="IBM Plex Mono">${esc(formatoValor(e.valor))}</text>`;
   });
   return `<svg class="chart-svg" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">${rows}</svg>`;
 }
@@ -700,7 +733,7 @@ function renderResumen(dTodos, obsInfo){
     {label:"Observado", valor:obsInfo.siObs, color:"#DC2626", fmt:v=>v.toLocaleString("es-PE")},
   ], {size:150});
 }
-function renderBarSection(elId, entries, formatoValor){ $(elId).innerHTML = barChart(entries, formatoValor); }
+function renderBarSection(elId, entries, formatoValor){ $(elId).innerHTML = `<div class="chart-scroll">${barChart(entries, formatoValor)}</div>`; }
 
 /* ══════════════════════════════════════════ POR PROFESIONAL ══════════════════════════════════════════ */
 function renderProfesional(rows){
@@ -859,7 +892,7 @@ $("btnDescargarSinExp").onclick = ()=>{
 function activarTab(nombre){
   const tabs = {Resumen:"tabResumen", Profesional:"tabProfesional", Matriz:"tabMatriz", Ranking:"tabRanking", Percapita:"tabPercapita"};
   const cards = {Resumen:"cardResumen", Profesional:"cardProfesional", Matriz:"cardMatriz", Ranking:"cardRanking", Percapita:"cardPercapita"};
-  Object.keys(tabs).forEach(k=>{ $(tabs[k]).classList.toggle("active", k===nombre); $(cards[k]).style.display = (k===nombre)?"":"none"; });
+  Object.keys(tabs).forEach(k=>{ $(tabs[k]).classList.toggle("active", k===nombre); $(tabs[k]).setAttribute("aria-selected", k===nombre ? "true" : "false"); $(cards[k]).style.display = (k===nombre)?"":"none"; });
   const titulos = {
     Resumen:"RESUMEN DE VALORIZACIÓN — USPP SATIPO",
     Profesional:"VALORIZACIÓN POR PROFESIONAL — USPP SATIPO",
@@ -961,3 +994,6 @@ cargarTodo();
 </script>
 </body>
 </html>
+
+
+
