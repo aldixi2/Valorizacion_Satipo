@@ -183,16 +183,16 @@
   .tab.active{background:#14547A;box-shadow:0 4px 10px rgba(20,84,122,.18)}
   .card.soft{padding:10px;background:#EAF1F6;border-color:#EAF1F6}
   .resumen-grid{grid-template-columns:1fr 1fr;gap:24px}
-  .chart-scroll{width:100%;overflow-x:auto;overscroll-behavior-inline:contain;padding:2px 2px 8px}#tendenciaAnualChart{overflow-x:auto;overscroll-behavior-inline:contain}
-  .chart-svg{min-width:760px}
+  .chart-scroll{width:100%;overflow-x:auto;overscroll-behavior-inline:contain;padding:2px 2px 8px}.chart-help{font-size:12px;color:#627487;margin:-7px 0 10px}#tendenciaAnualChart{overflow-x:auto;overscroll-behavior-inline:contain}
+  .chart-svg{min-width:650px}
   .donut-wrap{gap:24px;padding:8px 0}.donut-wrap svg{width:190px;height:190px;flex:0 0 190px}.donut-legend{gap:11px;font-size:13px;min-width:220px}
   .donut-legend i{width:13px;height:13px;border-radius:4px}
-  .prof-grid{gap:16px}.prof-card{border-radius:16px;box-shadow:0 3px 12px rgba(28,55,78,.04)}
+  .prof-grid{grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:14px}.prof-card{border-radius:16px;box-shadow:0 3px 12px rgba(28,55,78,.04);align-items:flex-start;min-width:0}.prof-body{min-width:0}.prof-name{font-size:15px;line-height:1.35;overflow-wrap:anywhere}.prof-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:7px 0 12px}.prof-pct{position:static;font-size:10px;background:#E8F2F8;color:#14547A;padding:4px 8px;border-radius:999px;font-weight:700}.prof-tipo{font-size:10px;font-weight:700;letter-spacing:.04em}.prof-esp-label{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#627487;font-weight:700;margin-bottom:5px}.prof-esp-list{display:flex;flex-wrap:wrap;gap:6px;min-height:26px}.prof-esp-chip{display:inline-flex;align-items:center;background:#E8F5F2;color:#17675D;border:1px solid #CDE8E1;border-radius:8px;padding:5px 8px;font-size:11px;line-height:1.25;font-weight:600;overflow-wrap:anywhere}.prof-esp-vacia{background:#F3F5F7;color:#637487;border-color:#E1E7EC}.prof-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:14px}.prof-stat{min-width:0}.prof-stat b{font-size:12px;white-space:nowrap}.prof-stat span{font-size:9px}.prof-grid-caption{grid-column:1/-1;font-size:12px;color:#627487;padding:2px 1px 0}
   .rk-row{padding:12px;border-radius:12px}.hero-card{padding:18px;border-radius:16px}
   .sim-card{background:linear-gradient(120deg,#113C5C,#17687B);border-radius:18px;padding:24px}
   .scroll{border:1px solid #E3EAF0;border-radius:12px}table{font-size:12px}th{padding:11px 10px;background:#164B6D}td{padding:9px 10px}
   @media(max-width:1000px){.resumen-grid{grid-template-columns:1fr}.wrap{padding:18px 14px 32px}.card{padding:18px}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
-  @media(max-width:620px){header{position:relative;align-items:flex-start;padding:14px}.brand-texto h1{font-size:15px;line-height:1.35}.brand img{height:36px}.header-derecha{width:100%;justify-content:space-between}.bloque-fechas{flex:1}.wrap{padding:12px 10px 28px}.card{padding:16px 14px;border-radius:15px;margin-bottom:12px}.kpis{gap:8px}.kpi{padding:14px 12px;border-radius:13px}.kpi .klabel{font-size:9px}.kpi .kval{font-size:21px}.kpi .ksub{font-size:10px}.kpi .kicon,.kpi-ring{display:none}.tabs{overflow-x:auto;flex-wrap:nowrap;padding-bottom:3px}.tab{white-space:nowrap;padding:10px 13px}.fg{flex:1 1 calc(50% - 12px);min-width:135px}.row>div:last-child{width:100%}.row>div:last-child button{flex:1}.chart-svg{min-width:700px}.donut-wrap{justify-content:center}.donut-wrap svg{width:150px;height:150px;flex-basis:150px}.donut-legend{min-width:175px;font-size:11px}.hero4{gap:8px}.hero-card{padding:12px 8px}.hero-card b{font-size:17px}.sim-card{padding:18px 16px}.rk-row{grid-template-columns:28px 32px 1fr;gap:7px}.rk-stats{grid-column:3;justify-content:flex-start}}
+  @media(max-width:620px){.prof-grid{grid-template-columns:1fr}.prof-card{padding:14px}.prof-name{font-size:14px}.prof-stats{gap:5px}.prof-stat b{font-size:11px}header{position:relative;align-items:flex-start;padding:14px}.brand-texto h1{font-size:15px;line-height:1.35}.brand img{height:36px}.header-derecha{width:100%;justify-content:space-between}.bloque-fechas{flex:1}.wrap{padding:12px 10px 28px}.card{padding:16px 14px;border-radius:15px;margin-bottom:12px}.kpis{gap:8px}.kpi{padding:14px 12px;border-radius:13px}.kpi .klabel{font-size:9px}.kpi .kval{font-size:21px}.kpi .ksub{font-size:10px}.kpi .kicon,.kpi-ring{display:none}.tabs{overflow-x:auto;flex-wrap:nowrap;padding-bottom:3px}.tab{white-space:nowrap;padding:10px 13px}.fg{flex:1 1 calc(50% - 12px);min-width:135px}.row>div:last-child{width:100%}.row>div:last-child button{flex:1}.chart-svg{min-width:620px}.donut-wrap{justify-content:center}.donut-wrap svg{width:150px;height:150px;flex-basis:150px}.donut-legend{min-width:175px;font-size:11px}.hero4{gap:8px}.hero-card{padding:12px 8px}.hero-card b{font-size:17px}.sim-card{padding:18px 16px}.rk-row{grid-template-columns:28px 32px 1fr;gap:7px}.rk-stats{grid-column:3;justify-content:flex-start}}
 </style>
 </head>
 <body>
@@ -328,7 +328,8 @@
       <div style="height:16px"></div>
     </div>
 
-    <h3 class="subtitulo" style="margin-top:4px">Valorización por especialidad médica — ¿cuál genera más?</h3>
+    <h3 class="subtitulo" style="margin-top:4px">Valorización por especialidad</h3>
+    <p class="chart-help">Monto acumulado de las atenciones por especialidad en el periodo. Se muestran las 10 con mayor valorización.</p>
     <div id="porEspecialidad" style="margin-bottom:18px"></div>
 
     <div class="resumen-grid">
@@ -349,8 +350,8 @@
 
   <!-- POR PROFESIONAL -->
   <div class="card" id="cardProfesional" style="display:none">
-    <div class="card-titulo"><div class="icono"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="6" r="3"/><path d="M3.5 15.5c0-3.3 2.5-5.3 5.5-5.3s5.5 2 5.5 5.3"/></svg></div> Valorización por profesional de salud</div>
-    <div class="filtros-nota">Solo incluye atenciones con profesional identificado vía cruce por FUA contra el RAtenDet. El % en cada tarjeta es cuánto de lo suyo se fue a per cápita.</div>
+    <div class="card-titulo"><div class="icono"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="6" r="3"/><path d="M3.5 15.5c0-3.3 2.5-5.3 5.5-5.3s5.5 2 5.5 5.3"/></svg></div> Profesionales y especialidad médica</div>
+    <div class="filtros-nota">Solo incluye atenciones con profesional identificado vía cruce por FUA contra el RAtenDet. Cada tarjeta muestra al profesional, su especialidad y el valor de sus atenciones. El porcentaje indica cuánto se fue a per cápita.</div>
     <div class="prof-grid" id="profesionalGrid"></div>
   </div>
 
@@ -478,7 +479,7 @@ function truncar(s,n){ s=String(s); return s.length>n ? s.slice(0,n-1)+"…" : s
 function barChart(entries, formatoValor, opts={}){
   if(!entries.length) return `<div class="muted" style="padding:10px 0">Sin datos con estos filtros.</div>`;
   const color = opts.color || "#1B4A6E";
-  const labelW = 240, rowH = 36, barMaxW = 440, valW = 110;
+  const labelW = 270, rowH = 29, barMaxW = 300, valW = 100;
   const width = labelW + barMaxW + valW + 10;
   const max = Math.max(1, ...entries.map(e=>e.valor));
   const height = entries.length*rowH + 6;
@@ -486,10 +487,10 @@ function barChart(entries, formatoValor, opts={}){
   entries.forEach((e,i)=>{
     const y = i*rowH + 2;
     const w = Math.max(2, e.valor/max*barMaxW);
-    rows += `<text x="${labelW-8}" y="${y+22}" text-anchor="end" font-size="12" fill="#101826" font-family="IBM Plex Sans">${esc(truncar(e.label,30))}</text>`;
-    rows += `<rect x="${labelW}" y="${y+2}" width="${barMaxW}" height="22" rx="6" fill="#F0EEE4"/>`;
-    rows += `<rect x="${labelW}" y="${y+2}" width="${w}" height="22" rx="6" fill="${color}"/>`;
-    rows += `<text x="${labelW+barMaxW+10}" y="${y+22}" font-size="11" font-weight="700" fill="${color}" font-family="IBM Plex Mono">${esc(formatoValor(e.valor))}</text>`;
+    rows += `<text x="${labelW-8}" y="${y+19}" text-anchor="end" font-size="11" fill="#101826" font-family="IBM Plex Sans"><title>${esc(e.label)}</title>${esc(truncar(e.label,36))}</text>`;
+    rows += `<rect x="${labelW}" y="${y+2}" width="${barMaxW}" height="18" rx="5" fill="#F0EEE4"/>`;
+    rows += `<rect x="${labelW}" y="${y+2}" width="${w}" height="18" rx="5" fill="${color}"/>`;
+    rows += `<text x="${labelW+barMaxW+10}" y="${y+19}" font-size="11" font-weight="700" fill="${color}" font-family="IBM Plex Mono">${esc(formatoValor(e.valor))}</text>`;
   });
   return `<svg class="chart-svg" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">${rows}</svg>`;
 }
@@ -632,15 +633,17 @@ function agregarPorProfesional(d){
     const dni = r.dni_resp_atencion;
     if(!map.has(dni)) map.set(dni, { dni, celda:{}, total:0, n:0, percapN:0,
       nombre: normalizaNombreProfesional(r.profesional_nombre) || ("DNI "+dni),
-      tipo: r.profesional_tipo || "PROFESIONAL DE SALUD" });
+      tipo: r.profesional_tipo || "PROFESIONAL DE SALUD", especialidades:new Set() });
     const obj = map.get(dni);
+    const especialidad = String(r.especialidad || "").trim();
+    if(especialidad) obj.especialidades.add(especialidad);
     obj.total += (r.valor_bruto_sis||0);
     obj.n += 1;
     if(r.diagnostico_percapita) obj.percapN += 1;
     const clave = ES_ANUAL ? Number(r.mes) : (r.fecha_atencion ? Number(r.fecha_atencion.split("-")[2]) : 0);
     if(clave>=1){ obj.celda[clave] = (obj.celda[clave]||0) + (r.valor_bruto_sis||0); }
   }
-  return [...map.values()].map(o=>({...o, promedio: o.n? o.total/o.n : 0, pctPercap: o.n? Math.round(o.percapN/o.n*100):0 }));
+  return [...map.values()].map(o=>({...o, especialidades:[...o.especialidades].sort((a,b)=>a.localeCompare(b,"es")), promedio: o.n? o.total/o.n : 0, pctPercap: o.n? Math.round(o.percapN/o.n*100):0 }));
 }
 
 /* ══════════════════════════════════════════ KPIs ══════════════════════════════════════════ */
@@ -711,9 +714,9 @@ function renderTendenciaAnual(datosAnio){
 
 function renderResumen(dTodos, obsInfo){
   const especialidadEntries = agruparValor(
-    dTodos.map(r=>({...r, _esp: r.especialidad || "Sin especialidad registrada (medicina general / otros)"})),
+    dTodos.map(r=>({...r, _esp: r.especialidad || "Sin especialidad registrada"})),
     "_esp", r=>r.valor_bruto_sis||0
-  ).slice(0,12);
+  ).slice(0,10);
   renderBarSection("porEspecialidad", especialidadEntries, fmtSoles);
 
   renderBarSection("topServicios", agruparValor(dTodos,"servicio",r=>r.valor_bruto_sis||0).slice(0,8), fmtSoles);
@@ -740,23 +743,30 @@ function renderProfesional(rows){
   const grid = $("profesionalGrid");
   if(!rows.length){ grid.innerHTML = `<div class="prof-empty">Sin atenciones con profesional identificado, con estos filtros. Corre <code>consolidar_valorizacion.py</code> con tus RAtenDet del periodo para habilitar esta vista.</div>`; return; }
   const ordenado = [...rows].sort((a,b)=>b.total-a.total);
-  grid.innerHTML = ordenado.map(r=>`
-    <div class="prof-card">
-      <div class="prof-pct" title="% de sus atenciones que van a per cápita">${r.pctPercap}% per cápita</div>
-      ${avatarIniciales(r.nombre, r.dni, "lg")}
-      <div class="prof-body">
-        <div class="prof-name">${esc(r.nombre)}</div>
-        <div class="prof-tipo">${esc(r.tipo)}</div>
-        <div class="prof-stats">
-          <div class="prof-stat"><b>${fmtSoles(r.total)}</b><span>Valor Bruto SIS</span></div>
-          <div class="prof-stat"><b>${r.n}</b><span>Atenciones</span></div>
-          <div class="prof-stat"><b>${fmtSoles(r.promedio)}</b><span>Promedio</span></div>
+  const tarjetas = ordenado.map(r=>{
+    const especialidades = r.especialidades.length
+      ? r.especialidades.map(e=>`<span class="prof-esp-chip">${esc(e)}</span>`).join("")
+      : `<span class="prof-esp-chip prof-esp-vacia">Sin especialidad registrada</span>`;
+    return `
+      <article class="prof-card">
+        ${avatarIniciales(r.nombre, r.dni, "lg")}
+        <div class="prof-body">
+          <div class="prof-name">${esc(r.nombre)}</div>
+          <div class="prof-meta"><span class="prof-tipo">${esc(r.tipo)}</span><span class="prof-pct">${r.pctPercap}% per cápita</span></div>
+          <div class="prof-esp-label">Especialidad</div>
+          <div class="prof-esp-list">${especialidades}</div>
+          <div class="prof-stats">
+            <div class="prof-stat"><b>${fmtSoles(r.total)}</b><span>Valor bruto SIS</span></div>
+            <div class="prof-stat"><b>${r.n}</b><span>Atenciones</span></div>
+            <div class="prof-stat"><b>${fmtSoles(r.promedio)}</b><span>Promedio</span></div>
+          </div>
         </div>
-      </div>
-    </div>`).join("");
+      </article>`;
+  }).join("");
+  grid.innerHTML = `<div class="prof-grid-caption">${ordenado.length.toLocaleString("es-PE")} profesionales vinculados al periodo</div>${tarjetas}`;
 }
 
-/* ══════════════════════════════════════════ MATRIZ ══════════════════════════════════════════ */
+/* ══════════════════════════════════════════ MATRIZ ══════════════════════════════════════════ */ */
 function cellClass(v){ if(v<=0) return ""; if(v>=1500) return "c-hot"; if(v>=400) return "c-med"; return "c-low"; }
 function renderMatrizProfesional(rows, anio, mes){
   const columnas = ES_ANUAL ? Array.from({length:12},(_,i)=>i+1) : Array.from({length:diasEnMes(anio,mes)},(_,i)=>i+1);
@@ -994,6 +1004,12 @@ cargarTodo();
 </script>
 </body>
 </html>
+
+
+
+
+
+
 
 
 
