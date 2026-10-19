@@ -216,6 +216,18 @@
   .prof-grid-caption{grid-column:1/-1;font-size:11px;color:#627487;padding:1px 1px 0}
   .sim-card{background:linear-gradient(120deg,#113C5C,#17687B);border-radius:15px;padding:20px}
   .scroll{border:1px solid #E3EAF0;border-radius:11px}table{font-size:11px}th{padding:10px;background:#164B6D}td{padding:8px 9px}
+  .chart-svg{width:100%;max-width:740px;min-width:0;height:auto;display:block}
+  #matrizScroll{width:100%;overflow-x:auto;overscroll-behavior-inline:contain;}
+  #matrizProfesional{width:100%;min-width:980px;table-layout:fixed;font-size:9px}
+  #matrizProfesional th.th-name,#matrizProfesional td.td-name{width:170px;min-width:170px;max-width:170px;white-space:normal;overflow-wrap:anywhere}
+  #matrizProfesional th.th-day{width:auto;min-width:18px;padding:7px 1px;font-size:8px}
+  #matrizProfesional th.th-total{width:70px;min-width:70px;padding:7px 3px;font-size:8px}
+  #matrizProfesional td:not(.td-name){padding:6px 1px;font-size:8px;white-space:nowrap;overflow:hidden}
+  .rk-row{grid-template-columns:30px 38px minmax(0,1fr);gap:8px;padding:11px 12px;align-items:center}
+  .rk-info-nombre{font-size:12px;line-height:1.3;overflow-wrap:anywhere}
+  .rk-info-tipo{font-size:10px;color:#526B7E;line-height:1.35;margin-top:3px;overflow-wrap:anywhere}
+  .rk-stats{grid-column:3;justify-content:flex-start;gap:8px 14px;margin-top:5px;font-size:10px}
+  @media(max-width:560px){#matrizProfesional{min-width:980px}.chart-svg{max-width:740px;min-width:600px}}
   @media print{.wrap{display:block!important}}
   @media(max-width:1100px){.wrap{grid-template-columns:minmax(235px,270px) minmax(0,1fr);gap:11px;padding:18px 15px}.kpi{padding:13px 14px}.kpi .kval{font-size:22px}.resumen-grid{grid-template-columns:1fr}}
   @media(max-width:820px){.wrap{display:block;padding:16px 13px 32px}.hero-intro{margin-bottom:12px}.hero-period{min-width:160px}.wrap>.kpis{grid-template-columns:repeat(2,minmax(0,1fr));margin-bottom:10px}.card{margin-bottom:12px}#filtersCard,#tabsCard{position:static;max-height:none;overflow:visible}#filtersCard .row{grid-template-columns:repeat(2,minmax(0,1fr))}#filtersCard .row>div:last-child{grid-column:1/-1;grid-template-columns:1fr 1fr}.resumen-grid{grid-template-columns:1fr}#tabsCard{margin-top:4px}.prof-grid{grid-template-columns:repeat(auto-fill,minmax(min(100%,360px),1fr))}}
@@ -359,7 +371,7 @@
     </div>
 
     <h3 class="subtitulo" style="margin-top:4px">Valorización por especialidad</h3>
-    <p class="chart-help">Monto acumulado de las atenciones por especialidad en el periodo. Se muestran las 10 con mayor valorización.</p>
+    <p class="chart-help">Monto acumulado de las atenciones por especialidad en el periodo. Se muestran las 8 con mayor valorización.</p>
     <div id="porEspecialidad" style="margin-bottom:18px"></div>
 
     <div class="resumen-grid">
@@ -389,7 +401,7 @@
   <div class="card" id="cardMatriz" style="display:none">
     <div class="card-titulo"><div class="icono"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="2.5" width="13" height="13" rx="2"/></svg></div> Matriz del profesional (Valor Bruto SIS)</div>
     <div class="muted" style="margin-bottom:10px" id="matrizNota">Cada celda es la suma de Valor Bruto SIS (en soles) de las atenciones de ese día atribuidas a ese profesional.</div>
-    <div class="scroll"><table id="matrizProfesional"></table></div>
+    <div class="scroll" id="matrizScroll"><table id="matrizProfesional"></table></div>
   </div>
 
   <!-- RANKING -->
@@ -509,7 +521,7 @@ function truncar(s,n){ s=String(s); return s.length>n ? s.slice(0,n-1)+"…" : s
 function barChart(entries, formatoValor, opts={}){
   if(!entries.length) return `<div class="muted" style="padding:10px 0">Sin datos con estos filtros.</div>`;
   const color = opts.color || "#1B4A6E";
-  const labelW = 270, rowH = 29, barMaxW = 300, valW = 100;
+  const labelW = 240, rowH = 25, barMaxW = 280, valW = 90;
   const width = labelW + barMaxW + valW + 10;
   const max = Math.max(1, ...entries.map(e=>e.valor));
   const height = entries.length*rowH + 6;
@@ -746,7 +758,7 @@ function renderResumen(dTodos, obsInfo){
   const especialidadEntries = agruparValor(
     dTodos.map(r=>({...r, _esp: r.especialidad || "Sin especialidad registrada"})),
     "_esp", r=>r.valor_bruto_sis||0
-  ).slice(0,10);
+  ).slice(0,8);
   renderBarSection("porEspecialidad", especialidadEntries, fmtSoles);
 
   renderBarSection("topServicios", agruparValor(dTodos,"servicio",r=>r.valor_bruto_sis||0).slice(0,8), fmtSoles);
@@ -798,18 +810,24 @@ function renderProfesional(rows){
 
 /* ══════════════════════════════════════════ MATRIZ ══════════════════════════════════════════ */
 function cellClass(v){ if(v<=0) return ""; if(v>=1500) return "c-hot"; if(v>=400) return "c-med"; return "c-low"; }
+function etiquetaProfesional(r){
+  const tipo=String(r.tipo||"PROFESIONAL DE SALUD").trim();
+  const especialidades=[...new Set(r.especialidades||[])].filter(Boolean);
+  if(/m[eé]dic/i.test(tipo)) return especialidades.length ? `Médico especialista · ${especialidades.join(" / ")}` : "Médico · Sin especialidad registrada";
+  return especialidades.length ? `${tipo} · ${especialidades.join(" / ")}` : tipo;
+}
 function renderMatrizProfesional(rows, anio, mes){
   const columnas = ES_ANUAL ? Array.from({length:12},(_,i)=>i+1) : Array.from({length:diasEnMes(anio,mes)},(_,i)=>i+1);
   $("matrizNota").textContent = ES_ANUAL
-    ? "Cada celda es la suma de Valor Bruto SIS (en soles) por mes, atribuida a ese profesional."
-    : "Cada celda es la suma de Valor Bruto SIS (en soles) de las atenciones de ese día atribuidas a ese profesional.";
+    ? "Cada celda muestra el valor SIS por profesional y mes."
+    : "Cada celda muestra el valor SIS por profesional y día. En pantallas pequeñas, desliza la tabla para recorrer el mes completo.";
   let html = `<thead><tr><th class="th-name">Profesional</th>`;
   columnas.forEach(c=> html += `<th class="th-day">${ES_ANUAL?MONTHS_ABR[c]:c}</th>`);
-  html += `<th class="th-total">Total</th><th class="th-total" style="background:#123049">N° atenciones</th></tr></thead><tbody>`;
+  html += `<th class="th-total">Total</th><th class="th-total" style="background:#123049">Atenciones</th></tr></thead><tbody>`;
   const ordenado = [...rows].sort((a,b)=>b.total-a.total);
   if(!ordenado.length){ html += `<tr><td colspan="${columnas.length+3}" style="padding:16px">Sin registros con estos filtros.</td></tr>`; }
   for(const r of ordenado){
-    html += `<tr><td class="td-name">${esc(r.nombre)}<div class="muted" style="font-size:10px">${esc(r.tipo)}</div></td>`;
+    html += `<tr><td class="td-name">${esc(r.nombre)}<div class="muted" style="font-size:10px">${esc(etiquetaProfesional(r))}</div></td>`;
     columnas.forEach(c=>{ const v=r.celda[c]||0; html += `<td class="${cellClass(v)}">${fmtSolesCelda(v)}</td>`; });
     html += `<td class="th-total">${fmtSoles(r.total)}</td><td class="th-total" style="background:#F5F3EC;color:#25232A">${r.n}</td></tr>`;
   }
@@ -833,7 +851,7 @@ function renderRanking(rows){
     <div class="rk-row">
       <div class="rk-pos">${i+1}</div>
       ${avatarIniciales(r.nombre, r.dni, "sm")}
-      <div><div class="rk-info-nombre">${esc(r.nombre)}</div><div class="rk-info-tipo">${esc(r.tipo)}</div></div>
+      <div><div class="rk-info-nombre">${esc(r.nombre)}</div><div class="rk-info-tipo">${esc(etiquetaProfesional(r))}</div></div>
       <div class="rk-stats">
         <span>Total <b>${fmtSoles(r.total)}</b></span>
         <span>N° <b>${r.n}</b></span>
@@ -1036,6 +1054,9 @@ cargarTodo();
 </script>
 </body>
 </html>
+
+
+
 
 
 
