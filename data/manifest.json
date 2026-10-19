@@ -209,14 +209,19 @@
       "anio": 2026,
       "mes": 6,
       "file": "val_2026_06.json"
+    },
+    {
+      "anio": 2026,
+      "mes": 7,
+      "file": "val_2026_07.json"
     }
   ],
   "ultimo": {
     "anio": 2026,
-    "mes": 6,
-    "file": "val_2026_06.json"
+    "mes": 7,
+    "file": "val_2026_07.json"
   },
-  "generado": "2026-09-15 16:51:28",
+  "generado": "2026-10-19 13:11:08",
   "origen_valorizacion": "D:\\ANALISIS DE DATOS\\VALORIZACION BASE DE DATOS",
   "origen_produccion": "C:\\Users\\USUARIO\\Desktop\\BASE DE DATOS\\Escritorio\\USPP\\BASE DE DATOS 2"
 }
